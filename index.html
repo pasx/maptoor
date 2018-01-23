@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html ng-app="maptoor_app">
+
+<!-- Maptoor application - copyright @ PG 2015-2018 -->
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+
+	<title>Maptoor</title>
+
+	<script>
+		DEBUG = true;
+	</script>
+
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTuqQRYYORvCQSL0YcDaYzG3u2yA2xx78&libraries=geometry"></script>
+
+	<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/jquery-mobile/jquery.mobile-1.4.5.min.js"></script>
+
+	<script type="text/javascript">
+		$.mobile.loading().hide();
+	</script>
+
+	<script type="text/javascript" src="lib/angular/angular.min.js"></script>
+	<script type="text/javascript" src="lib/angular-route/angular-route.min.js"></script>
+	<script src="lib/angular/angular-cookies.js"></script>
+	<script src="lib/angular/angular-resource.js"></script>
+	<script src="lib/angular/angular-messages.js"></script>
+	<script type="text/javascript" src="js/caching.min.js"></script>
+	<script type="text/javascript" src="lib/linq.js/linq.min.js"></script>
+	<script type="text/javascript" src="js/maptoor.min.js"></script>
+	<script type="text/javascript" src="js/maptoor-spatial.min.js"></script>
+	<script type="text/javascript" src="js/maptoor-process.min.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>
+	<link href="js/maptoor.css" rel="stylesheet">
+	<link href="js/maptoor-signs-default.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+	<div id="mapbox" style="top:50px;left:50px;width:400px;height:400px;border:1px dotted gray;">
+		<div id="map" style="width:100%;height:100%;border:1px dotted pink;"></div>
+	</div>
+
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+
+			var map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 11,
+				center: new google.maps.LatLng(33.787549, -117.854559),
+				mapTypeId: google.maps.MapTypeId.STREET
+			});
+
+			var options = new maptoor.signs.SignsOptions();
+			options.iconUrl = "js/maptoor/icons/mcdonalds.png";
+			options.showIcon = false;
+			options.isMetric = false;
+			options.root = "geonames";
+			options.numSigns = 8;
+			options.userName = "maptoor";
+			options.map = map;
+			options.excludedNameParts = ["Mobile Home", "Mobile Park", "(historical)", "Trailer"];
+			options.populationZeroIsNoData = false;
+			var signs = new maptoor.signs.Signs("mapbox", options);
+			signs.setPadding(25);
+			signs.signsDataProvider = new maptoor.signs.SignsDataProvider(options);
+
+			//dragstart
+			google.maps.event.addListener(map, 'dragstart', function () {
+				signs.clear();
+			});
+
+			google.maps.event.addListener(map, 'idle', function () {
+
+				var bounds = map.getBounds();
+				signs.refresh(bounds);
+			});
+		});
+
+	</script>
+
+</body>
+</html>

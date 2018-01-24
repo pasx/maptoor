@@ -1,0 +1,17 @@
+/*Placement of signs taking into account default controls and mentions on Google map*/
+
+#sign-br {
+  padding-right: 41px;
+}
+
+#sign-bc, #sign-br {
+  padding-bottom: 20px;
+}
+
+#sign-bl {
+  padding-bottom: 26px;
+}
+
+#sign-tl {
+  padding-top: 42px;
+}
